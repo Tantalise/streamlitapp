@@ -1,5 +1,6 @@
 # run: streamlit run streamlitwebsitecombined.py
 import streamlit as st
+import plotnine
 from plotnine import *
 import geopandas as gpd
 from pickle import load
