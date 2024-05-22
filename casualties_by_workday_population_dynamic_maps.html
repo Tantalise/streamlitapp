@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>casualties_by_workday_population_dynamic_maps</title>
+    <style>
+        button {
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 30px;
+            margin: 0;
+            transition-duration: 0.2s;
+            cursor: pointer;
+            font-family: gill sans;
+            font-weight: bold;
+            height: 70px;
+            vertical-align: top;
+        }
+
+        .row1 {
+            width: 350px;
+        }
+
+        .row2 {
+            width: 140px;
+        }
+
+        .green_button {
+            background-color: white;
+            color: black;
+            border: 2px solid #04AA6D;
+        }
+
+        .green_button:hover {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        .green_button.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
+        .yellow_button {
+            background-color: white;
+            color: black;
+            border: 2px solid #F9d323;
+        }
+
+        .yellow_button:hover {
+            background-color: #F9d323;
+            color: white;
+        }
+
+        .yellow_button.active {
+            background-color: #F9d323;
+            color: white;
+        }
+
+        .blue_button {
+            background-color: white;
+            color: black;
+            border: 2px solid #008CBA;
+            font-size: 18px;
+        }
+
+        .blue_button:hover {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        .blue_button.active {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        .red_button {
+            background-color: white;
+            color: black;
+            border: 2px solid #Fd5a5a;
+        }
+
+        .red_button:hover {
+            background-color: #Fd5a5a;
+            color: white;
+        }
+
+        .red_button.active {
+            background-color: #Fd5a5a;
+            color: white;
+        }
+
+        .purple_button {
+            background-color: white;
+            color: black;
+            border: 2px solid #890abb;
+        }
+
+        .purple_button:hover {
+            background-color: #890abb;
+            color: white;
+        }
+
+        .purple_button.active {
+            background-color: #890abb;
+            color: white;
+        }
+
+        .white_button {
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            font-weight: normal;
+        }
+
+        .white_button:hover {
+            font-weight: bold;
+        }
+
+        .white_button.active {
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr style="text-align: center">
+            <td>
+                <button class="row1 white_button active" data-area-type="ward">
+                    Wards
+                </button>
+            </td>
+            <td>
+                <button class="row1 white_button" data-area-type="borough">
+                    Boroughs
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="line-height: 0;">
+                <button class="row2 purple_button active">
+                    Total
+                </button>
+                <button class="row2 blue_button">
+                    Total Weighted by Severity
+                </button>
+                <button class="row2 green_button">
+                    Slight
+                </button>
+                <button class="row2 yellow_button">
+                    Serious
+                </button>
+                <button class="row2 red_button">
+                    Fatal
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <iframe id="map-iframe" src="casualties_by_workday_populations_maps/total_casualties_by_ward.html" width="100%" height="500"></iframe>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = {
+                "Total": "total",
+                "Total Weighted by Severity": "weighted_total",
+                "Slight": "slight",
+                "Serious": "serious",
+                "Fatal": "fatal"
+            };
+
+            const iframeElement = document.getElementById('map-iframe');
+            let activeButton = document.querySelector('.purple_button');
+            let areaType = 'ward'; // Initial area type
+
+            // Handle area type buttons
+            const areaTypeButtons = document.querySelectorAll('.row1.white_button');
+            areaTypeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    areaType = this.dataset.areaType;
+                    updateMapSource(activeButton.textContent.trim(), areaType);
+
+                    // Remove active class from previously active area type button
+                    const previousActiveButton = document.querySelector('.row1.white_button.active');
+                    previousActiveButton.classList.remove('active');
+
+                    // Add active class to clicked area type button
+                    this.classList.add('active');
+                });
+            });
+
+            // Update map source based on severity and area type
+            function updateMapSource(severity, areaType) {
+                const mapName = buttons[severity] ? `${buttons[severity]}_casualties_by_${areaType}` : '';
+                iframeElement.src = mapName ? `casualties_by_workday_populations_maps/${mapName}.html` : '';
+            }
+
+            Object.keys(buttons).forEach(buttonName => {
+                const button = Array.from(document.querySelectorAll('button')).find(btn => btn.textContent.trim() === buttonName);
+
+                if (button) {
+                    button.addEventListener('click', function() {
+                        updateMapSource(buttonName, areaType);
+
+                        activeButton.classList.remove('active');
+
+                        this.classList.add('active');
+                        activeButton = this;
+                    });
+                } else {
+                    console.warn(`Button not found: ${buttonName}`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
