@@ -36,3 +36,6 @@ for parameter in weather_parameters:
         st.write(f'The coefficient of {parameter} is statistically significant, indicating a relationship with the number of accidents.')
     else:
         st.write(f'The coefficient of {parameter} is not statistically significant, indicating no significant relationship with the number of accidents.')
+
+
+
